@@ -1,2 +1,0 @@
-# arckenverSniper
-Snipe arckenver
