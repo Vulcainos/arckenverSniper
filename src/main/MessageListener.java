@@ -25,11 +25,11 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
 public class MessageListener extends ListenerAdapter
 {
-	
+
 	static String personne = "Titan le sang";
-	static String idPersonne = "183719402343104512";
-	
-	
+	static String idPersonne = "201064975848964096";
+
+
 	Date lastSnipe = new Date((new Date().getTime()-3600*1000));
 	String lastSniper = "Pas encore Snipe depuis le lancement du bot";
 
@@ -47,7 +47,7 @@ public class MessageListener extends ListenerAdapter
 	@Override
 	public void onMessageReceived(MessageReceivedEvent event)
 	{
-		
+
 		if (event.isFromType(ChannelType.TEXT))
 		{
 			User author = event.getAuthor();
@@ -72,7 +72,7 @@ public class MessageListener extends ListenerAdapter
 				//String patternString = "";
 
 				//Pattern pattern = Pattern.compile(patternString);
-				
+
 				//Matcher matcher = pattern.matcher(msg);
 				//boolean matches = matcher.matches();
 
@@ -87,7 +87,7 @@ public class MessageListener extends ListenerAdapter
 					//channel.sendMessage(guild.getMemberById(idPersonne).getOnlineStatus().toString()).queue();
 					if(guild.getMemberById(idPersonne).getOnlineStatus().toString().equals("ONLINE") && trouvable()) {
 						//channel.sendMessage("Bien vue").queue();
-						
+
 						ajouterPoint(guild,author);
 						lastSnipe = new Date();
 						lastSniper = author.getName();
@@ -101,10 +101,11 @@ public class MessageListener extends ListenerAdapter
 				if (msg.equals("ùscore"))
 				{
 					try(BufferedReader reader =
-							new BufferedReader(new FileReader(new File(guild.getName())));
+							new BufferedReader(new FileReader(new File("ListeServeur/"+guild.getId())));
 							){
 						String line = "";
 						String res = "```" + "Liste des tires de Arckenver :\n";
+						reader.readLine();
 						while((line = reader.readLine()) != null){
 							String[] tab = line.split(":");
 							//System.out.println(guild.getMemberById(tab[0]).getUser().getName()+" à "+tab[1]);
@@ -117,21 +118,21 @@ public class MessageListener extends ListenerAdapter
 					}
 				}else if (msg.equals("ùlast")) {
 					long temps = (3600 - (new Date().getTime()/1000 - lastSnipe.getTime()/1000));
-					
-					
+
+
 					//channel.sendMessage(lastSnipe.toString()).queue();
-					
-					
+
+
 					String res = "```" + "Dernier Snipe : " +lastSnipe.toString() +"\n";
-					
+
 					if(temps>0) {
 						res += "Temps avant prochain Snipe : "+ temps/60 + " minutes et " + temps%60 + " secondes\n";
 					} else {
 						res += "Vous pouvez Sniper Arckenver!\n";
 					}
-					
+
 					res += "Dernier Snipe par : " + lastSniper;
-					
+
 					res += "```";
 					channel.sendMessage(res).queue();
 				}
@@ -177,13 +178,14 @@ public class MessageListener extends ListenerAdapter
 		String res ="";
 		boolean dansLeFichier = false;
 		try(BufferedReader reader =
-				new BufferedReader(new FileReader(new File(guild.getName())));
+				new BufferedReader(new FileReader(new File("ListeServeur/"+guild.getId())));
 				){
 			String line = "";
+			reader.readLine();
 			while((line = reader.readLine()) != null){
 				String[] tab = line.split(":");
 				//System.out.println(guild.getMemberById(tab[0]).getUser().getName()+":"+tab[1]);
-				
+
 				if(tab[0].equals(author.getId())) {
 					res += guild.getMemberById(tab[0]).getUser().getId()+":"+(Integer.parseInt(tab[1]) + 1)+"\n";
 					dansLeFichier = true;
@@ -191,21 +193,27 @@ public class MessageListener extends ListenerAdapter
 					res += guild.getMemberById(tab[0]).getUser().getId()+":"+tab[1]+"\n";
 				}
 			}
-			if(!dansLeFichier) {
-				res += author.getId()+":1\n";
-			}
+
 		} catch(IOException ioe){
-			System.out.println("Erreur lors de la lecture");
+			if(new File("ListeServeur/"+guild.getId()).isFile()) {
+				System.out.println("Erreur lors de la lecture");
+			} else {
+				System.out.println("Creation du fichier : "+guild.getId()+", serveur name : "+guild.getName());
+			}
+		}
+		if(!dansLeFichier) {
+			res += author.getId()+":1\n";
 		}
 		try(BufferedWriter writer = 
 				new BufferedWriter(new FileWriter(
-						new File(guild.getName())));
-			){
-			      writer.append(res);
-			      writer.flush(); // Si tu libère le buffer (ici ce n'est pas utile)
-			} catch(IOException ioe){
-			    System.out.println("Erreur écriture");
-			}
+						new File("ListeServeur/"+guild.getId())));
+				){
+			writer.append(guild.getName()+"\n");
+			writer.append(res);
+			writer.flush(); // Si tu libère le buffer (ici ce n'est pas utile)
+		} catch(IOException ioe){
+			System.out.println("Erreur écriture");
+		}
 
 
 		/*BufferedReader reader = new BufferedReader(new FileReader(new File(guild.getName())));
