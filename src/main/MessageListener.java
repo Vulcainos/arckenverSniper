@@ -27,16 +27,36 @@ public class MessageListener extends ListenerAdapter
 {
 
 	static String personne = "Titan le sang";
-	static String idPersonne = "201064975848964096";
+	static String idPersonne = "183719402343104512";
 
 
-	Date lastSnipe = new Date((new Date().getTime()-3600*1000));
+	Date lastSnipe = new Date((new Date().getTime()-3600*1000));//heure lancement bot - 1 heure
 	String lastSniper = "Pas encore Snipe depuis le lancement du bot";
 
 	public static void main(String[] args)
 			throws LoginException, RateLimitedException, InterruptedException
 	{
-		JDA jda = new JDABuilder(AccountType.BOT).setToken("Token").buildBlocking();
+		if(args.length==0 || args.length>2) {
+			System.out.println("Le bot à besoin de paramètres : \n"
+					+ "Si 1 paramètre : String token. token est le token du bot et la personne à Sniper de base par le bot est Acrkenver (id:183719402343104512)\n"
+					+ "Si 2 paramètre : String token, String idPersonne. token est le token du bot et idPersonne est l'id de la personne à Sniper\n"
+					+ "Exemple : java SniperBot Njc***gwNDk0O4AyMTA4***3-XkAg***e0Zdq***kz-57-fBzkdb***ODgY 201064975848964096");
+			return;
+		} else if(args.length==2) {
+			idPersonne = args[1];
+		}
+		
+		//System.out.println("token : "+args[0]);
+		//System.out.println("idPersonne : "+args[1]);
+ 
+		if(!new File("ListeServeur/").exists()) {
+			if(new File("ListeServeur").mkdirs()) {
+			System.out.println("Création dossier ListeServeur");
+			} else {
+				System.out.println("**Dossier ListeServeur manquant!**");
+			}
+		}
+		JDA jda = new JDABuilder(AccountType.BOT).setToken(args[0]).buildBlocking();
 		personne = jda.getUserById(idPersonne).getName();
 		//System.out.println(personne);
 		System.out.println("Bot En Ligne");
@@ -104,7 +124,7 @@ public class MessageListener extends ListenerAdapter
 							new BufferedReader(new FileReader(new File("ListeServeur/"+guild.getId())));
 							){
 						String line = "";
-						String res = "```" + "Liste des tires de Arckenver :\n";
+						String res = "```" + "Liste des Snipe de "+personne+" :\n";
 						reader.readLine();
 						while((line = reader.readLine()) != null){
 							String[] tab = line.split(":");
