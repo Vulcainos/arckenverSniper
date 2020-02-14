@@ -37,9 +37,9 @@ public class MessageListener extends ListenerAdapter
 			throws LoginException, RateLimitedException, InterruptedException
 	{
 		if(args.length==0 || args.length>2) {
-			System.out.println("Le bot à besoin de paramètres : \n"
-					+ "Si 1 paramètre : String token. token est le token du bot et la personne à Sniper de base par le bot est Acrkenver (id:183719402343104512)\n"
-					+ "Si 2 paramètre : String token, String idPersonne. token est le token du bot et idPersonne est l'id de la personne à Sniper\n"
+			System.out.println("Le bot Ã  besoin de paramÃ¨tres : \n"
+					+ "Si 1 paramÃ¨tre : String token. token est le token du bot et la personne Ã  Sniper de base par le bot est Acrkenver (id:183719402343104512)\n"
+					+ "Si 2 paramÃ¨tre : String token, String idPersonne. token est le token du bot et idPersonne est l'id de la personne Ã  Sniper\n"
 					+ "Exemple : java SniperBot Njc***gwNDk0O4AyMTA4***3-XkAg***e0Zdq***kz-57-fBzkdb***ODgY 201064975848964096");
 			return;
 		} else if(args.length==2) {
@@ -51,7 +51,7 @@ public class MessageListener extends ListenerAdapter
  
 		if(!new File("ListeServeur/").exists()) {
 			if(new File("ListeServeur").mkdirs()) {
-			System.out.println("Création dossier ListeServeur");
+			System.out.println("CrÃ©ation dossier ListeServeur");
 			} else {
 				System.out.println("**Dossier ListeServeur manquant!**");
 			}
@@ -98,7 +98,7 @@ public class MessageListener extends ListenerAdapter
 
 				System.out.printf("[%s][%s] %s: %s\n",guild.getName(), textChannel.getName(), author.getName(), msg);
 
-				/*if (msg.equals("ùping"))
+				/*if (msg.equals("Ã¹ping"))
 				{
 					channel.sendMessage("pong!").queue();
 				}*/
@@ -118,7 +118,7 @@ public class MessageListener extends ListenerAdapter
 					}
 				}
 
-				if (msg.equals("ùscore"))
+				if (msg.equals("Ã¹score"))
 				{
 					try(BufferedReader reader =
 							new BufferedReader(new FileReader(new File("ListeServeur/"+guild.getId())));
@@ -128,15 +128,15 @@ public class MessageListener extends ListenerAdapter
 						reader.readLine();
 						while((line = reader.readLine()) != null){
 							String[] tab = line.split(":");
-							//System.out.println(guild.getMemberById(tab[0]).getUser().getName()+" à "+tab[1]);
-							res += guild.getMemberById(tab[0]).getUser().getName()+" à "+tab[1]+"\n";
+							//System.out.println(guild.getMemberById(tab[0]).getUser().getName()+" Ã  "+tab[1]);
+							res += guild.getMemberById(tab[0]).getUser().getName()+" a "+tab[1]+"\n";
 						}
 						res += "```";
 						channel.sendMessage(res).queue();
 					} catch(IOException ioe){
 						System.out.println("Erreur lors de la lecture");
 					}
-				}else if (msg.equals("ùlast")) {
+				}else if (msg.equals("Ã¹last")) {
 					long temps = (3600 - (new Date().getTime()/1000 - lastSnipe.getTime()/1000));
 
 
@@ -148,7 +148,7 @@ public class MessageListener extends ListenerAdapter
 					if(temps>0) {
 						res += "Temps avant prochain Snipe : "+ temps/60 + " minutes et " + temps%60 + " secondes\n";
 					} else {
-						res += "Vous pouvez Sniper Arckenver!\n";
+						res += "Vous pouvez Sniper "+personne+"!\n";
 					}
 
 					res += "Dernier Snipe par : " + lastSniper;
@@ -159,16 +159,16 @@ public class MessageListener extends ListenerAdapter
 
 
 
-				else if (msg.equals("ùhelp"))
+				else if (msg.equals("Ã¹help"))
 				{
 					channel.sendMessage("```"
 							+ "Voici toute les commandes.\n"
 							+ "  @"+personne+" vu - Permet de Snipe "+personne+"!\n"
 							+ "\n"
-							+ "  ùlast  - Affiche toutes les infos du dernier Snipe!\n"
-							+ "  ùscore - Affiche le score des utilisateur sur le serveur!\n"
+							+ "  Ã¹last  - Affiche toutes les infos du dernier Snipe!\n"
+							+ "  Ã¹score - Affiche le score des utilisateur sur le serveur!\n"
 							+ "\n"
-							+ "  ùhelp  - affiche toutes les commandes\n"
+							+ "  Ã¹help  - affiche toutes les commandes\n"
 							+ "```").queue();
 				}
 
@@ -230,9 +230,9 @@ public class MessageListener extends ListenerAdapter
 				){
 			writer.append(guild.getName()+"\n");
 			writer.append(res);
-			writer.flush(); // Si tu libère le buffer (ici ce n'est pas utile)
+			writer.flush(); // Si tu libÃ¨re le buffer (ici ce n'est pas utile)
 		} catch(IOException ioe){
-			System.out.println("Erreur écriture");
+			System.out.println("Erreur Ã©criture");
 		}
 
 
@@ -249,7 +249,7 @@ public class MessageListener extends ListenerAdapter
 				while((line = reader.readLine()) != null){
 					String[] tab = line.split(":");
 					if(tab[0].equals(author.getId())) {
-						//System.out.println(guild.getMemberById(tab[0]).getUser().getName()+" à "+tab[1]);
+						//System.out.println(guild.getMemberById(tab[0]).getUser().getName()+" Ã  "+tab[1]);
 						points = Integer.parseInt(tab[1]); //ajoute le point
 						//System.out.println("test");
 						writer.append(author.getId()+":"+(points+1));//ecrit l'author du tireur
@@ -259,17 +259,17 @@ public class MessageListener extends ListenerAdapter
 						System.out.println(tab[0]+":"+tab[1]);
 					}
 					System.out.println(author.getId()+":"+(points+1));
-					writer.newLine(); // Aller à la ligne suivante
+					writer.newLine(); // Aller Ã  la ligne suivante
 				}
 
 
 
 
 
-			//écrit dans le fichier
-			writer.flush(); // Si tu libère le buffer (ici ce n'est pas utile)
+			//Ã©crit dans le fichier
+			writer.flush(); // Si tu libÃ¨re le buffer (ici ce n'est pas utile)
 		} catch(IOException ioe){
-			System.out.println("Erreur écriture");
+			System.out.println("Erreur Ã©criture");
 		}*/
 	}
 
