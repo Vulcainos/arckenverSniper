@@ -40,7 +40,11 @@ public class MessageListener extends ListenerAdapter
 			System.out.println("Le bot à besoin de paramètres : \n"
 					+ "Si 1 paramètre : String token. token est le token du bot et la personne à Sniper de base par le bot est Acrkenver (id:183719402343104512)\n"
 					+ "Si 2 paramètre : String token, String idPersonne. token est le token du bot et idPersonne est l'id de la personne à Sniper\n"
+<<<<<<< HEAD
 					+ "Exemple : java -jar SniperBot.jar Njc***gwNDk0O4AyMTA4***3-XkAg***e0Zdq***kz-57-fBzkdb***ODgY 201064975848964096");
+=======
+					+ "Exemple : java -jar SniperBot Njc***gwNDk0O4AyMTA4***3-XkAg***e0Zdq***kz-57-fBzkdb***ODgY 201064975848964096");
+>>>>>>> 7c9c75348d44aaa1cae43644219fcd36241b32b3
 			return;
 		} else if(args.length==2) {
 			idPersonne = args[1];
@@ -129,7 +133,11 @@ public class MessageListener extends ListenerAdapter
 						while((line = reader.readLine()) != null){
 							String[] tab = line.split(":");
 							//System.out.println(guild.getMemberById(tab[0]).getUser().getName()+" à "+tab[1]);
+<<<<<<< HEAD
 							res += guild.getMemberById(tab[0]).getUser().getName()+" à "+tab[1]+"\n";
+=======
+							res += guild.getMemberById(tab[0]).getUser().getName()+" a "+tab[1]+"\n";
+>>>>>>> 7c9c75348d44aaa1cae43644219fcd36241b32b3
 						}
 						res += "```";
 						channel.sendMessage(res).queue();
@@ -148,7 +156,7 @@ public class MessageListener extends ListenerAdapter
 					if(temps>0) {
 						res += "Temps avant prochain Snipe : "+ temps/60 + " minutes et " + temps%60 + " secondes\n";
 					} else {
-						res += "Vous pouvez Sniper Arckenver!\n";
+						res += "Vous pouvez Sniper "+personne+"!\n";
 					}
 
 					res += "Dernier Snipe par : " + lastSniper;
