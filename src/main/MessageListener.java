@@ -40,18 +40,18 @@ public class MessageListener extends ListenerAdapter
 			System.out.println("Le bot à besoin de paramètres : \n"
 					+ "Si 1 paramètre : String token. token est le token du bot et la personne à Sniper de base par le bot est Acrkenver (id:183719402343104512)\n"
 					+ "Si 2 paramètre : String token, String idPersonne. token est le token du bot et idPersonne est l'id de la personne à Sniper\n"
-					+ "Exemple : java SniperBot Njc***gwNDk0O4AyMTA4***3-XkAg***e0Zdq***kz-57-fBzkdb***ODgY 201064975848964096");
+					+ "Exemple : java -jar SniperBot Njc***gwNDk0O4AyMTA4***3-XkAg***e0Zdq***kz-57-fBzkdb***ODgY 201064975848964096");
 			return;
 		} else if(args.length==2) {
 			idPersonne = args[1];
 		}
-		
+
 		//System.out.println("token : "+args[0]);
 		//System.out.println("idPersonne : "+args[1]);
- 
+
 		if(!new File("ListeServeur/").exists()) {
 			if(new File("ListeServeur").mkdirs()) {
-			System.out.println("Création dossier ListeServeur");
+				System.out.println("Création dossier ListeServeur");
 			} else {
 				System.out.println("**Dossier ListeServeur manquant!**");
 			}
@@ -129,7 +129,7 @@ public class MessageListener extends ListenerAdapter
 						while((line = reader.readLine()) != null){
 							String[] tab = line.split(":");
 							//System.out.println(guild.getMemberById(tab[0]).getUser().getName()+" à "+tab[1]);
-							res += guild.getMemberById(tab[0]).getUser().getName()+" à "+tab[1]+"\n";
+							res += guild.getMemberById(tab[0]).getUser().getName()+" a "+tab[1]+"\n";
 						}
 						res += "```";
 						channel.sendMessage(res).queue();
@@ -148,7 +148,7 @@ public class MessageListener extends ListenerAdapter
 					if(temps>0) {
 						res += "Temps avant prochain Snipe : "+ temps/60 + " minutes et " + temps%60 + " secondes\n";
 					} else {
-						res += "Vous pouvez Sniper Arckenver!\n";
+						res += "Vous pouvez Sniper "+personne+"!\n";
 					}
 
 					res += "Dernier Snipe par : " + lastSniper;
@@ -241,10 +241,8 @@ public class MessageListener extends ListenerAdapter
 				new BufferedWriter(new FileWriter(
 						new File(guild.getName())));
 				){
-
 			//Ajoute un point
 			int points = 0;
-
 				String line = "";
 				while((line = reader.readLine()) != null){
 					String[] tab = line.split(":");
@@ -261,11 +259,6 @@ public class MessageListener extends ListenerAdapter
 					System.out.println(author.getId()+":"+(points+1));
 					writer.newLine(); // Aller à la ligne suivante
 				}
-
-
-
-
-
 			//écrit dans le fichier
 			writer.flush(); // Si tu libère le buffer (ici ce n'est pas utile)
 		} catch(IOException ioe){
