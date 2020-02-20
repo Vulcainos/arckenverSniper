@@ -40,7 +40,7 @@ public class MessageListener extends ListenerAdapter
 			System.out.println("Le bot à besoin de paramètres : \n"
 					+ "Si 1 paramètre : String token. token est le token du bot et la personne à Sniper de base par le bot est Acrkenver (id:183719402343104512)\n"
 					+ "Si 2 paramètre : String token, String idPersonne. token est le token du bot et idPersonne est l'id de la personne à Sniper\n"
-					+ "Exemple : java SniperBot Njc***gwNDk0O4AyMTA4***3-XkAg***e0Zdq***kz-57-fBzkdb***ODgY 201064975848964096");
+					+ "Exemple : java -jar SniperBot Njc***gwNDk0O4AyMTA4***3-XkAg***e0Zdq***kz-57-fBzkdb***ODgY 201064975848964096");
 			return;
 		} else if(args.length==2) {
 			idPersonne = args[1];
