@@ -40,11 +40,8 @@ public class MessageListener extends ListenerAdapter
 			System.out.println("Le bot à besoin de paramètres : \n"
 					+ "Si 1 paramètre : String token. token est le token du bot et la personne à Sniper de base par le bot est Acrkenver (id:183719402343104512)\n"
 					+ "Si 2 paramètre : String token, String idPersonne. token est le token du bot et idPersonne est l'id de la personne à Sniper\n"
-<<<<<<< HEAD
 					+ "Exemple : java -jar SniperBot.jar Njc***gwNDk0O4AyMTA4***3-XkAg***e0Zdq***kz-57-fBzkdb***ODgY 201064975848964096");
-=======
-					+ "Exemple : java -jar SniperBot Njc***gwNDk0O4AyMTA4***3-XkAg***e0Zdq***kz-57-fBzkdb***ODgY 201064975848964096");
->>>>>>> 7c9c75348d44aaa1cae43644219fcd36241b32b3
+
 			return;
 		} else if(args.length==2) {
 			idPersonne = args[1];
@@ -106,38 +103,23 @@ public class MessageListener extends ListenerAdapter
 				{
 					channel.sendMessage("pong!").queue();
 				}*/
-				if (msg.equals("@"+personne+" vu"))
-				{
-					//channel.sendMessage(guild.getMemberById(idPersonne).getOnlineStatus().toString()).queue();
-					if(guild.getMemberById(idPersonne).getOnlineStatus().toString().equals("ONLINE") && trouvable()) {
-						//channel.sendMessage("Bien vue").queue();
-
-						ajouterPoint(guild,author);
-						lastSnipe = new Date();
-						lastSniper = author.getName();
-						message.addReaction("\uD83D\uDC4D").queue();
-						//SetTimer
-					} else {
-						message.addReaction("\uD83D\uDC4E").queue();
-					}
-				}
+				
 
 				if (msg.equals("ùscore"))
 				{
 					try(BufferedReader reader =
 							new BufferedReader(new FileReader(new File("ListeServeur/"+guild.getId())));
 							){
-						String line = "";
-						String res = "```" + "Liste des Snipe de "+personne+" :\n";
-						reader.readLine();
+						String line = reader.readLine();
+						String[] tab = line.split(";");
+						String res = "```" + "Liste des Snipe de "+personne+" sur "+tab[0]+" :\n";
+						
 						while((line = reader.readLine()) != null){
-							String[] tab = line.split(":");
+							tab = line.split(":");
 							//System.out.println(guild.getMemberById(tab[0]).getUser().getName()+" à "+tab[1]);
-<<<<<<< HEAD
-							res += guild.getMemberById(tab[0]).getUser().getName()+" à "+tab[1]+"\n";
-=======
+
 							res += guild.getMemberById(tab[0]).getUser().getName()+" a "+tab[1]+"\n";
->>>>>>> 7c9c75348d44aaa1cae43644219fcd36241b32b3
+
 						}
 						res += "```";
 						channel.sendMessage(res).queue();
@@ -145,24 +127,42 @@ public class MessageListener extends ListenerAdapter
 						System.out.println("Erreur lors de la lecture");
 					}
 				}else if (msg.equals("ùlast")) {
-					long temps = (3600 - (new Date().getTime()/1000 - lastSnipe.getTime()/1000));
-
-
+					
+					
+					String res = "";
+					
 					//channel.sendMessage(lastSnipe.toString()).queue();
 
+					
+					try(BufferedReader reader =
+							new BufferedReader(new FileReader(new File("ListeServeur/"+guild.getId())));
+							){
+						String line = "";
+						line = reader.readLine();
+						String[] tab = line.split(";");
+						Date time = new Date(Long.parseLong(tab[2]));
+						long temps = (3600 - (new Date().getTime()/1000 - time.getTime()/1000));
+						//System.out.println(line);
+						
+						res = "```" + "Dernier Snipe : " + time +"\n";
+						if(temps>0) {
+							res += "Temps avant prochain Snipe : "+ temps/60 + " minutes et " + temps%60 + " secondes\n";
+						} else {
+							res += "Vous pouvez Sniper "+personne+"!\n";
+						}
 
-					String res = "```" + "Dernier Snipe : " +lastSnipe.toString() +"\n";
-
-					if(temps>0) {
-						res += "Temps avant prochain Snipe : "+ temps/60 + " minutes et " + temps%60 + " secondes\n";
-					} else {
-						res += "Vous pouvez Sniper "+personne+"!\n";
+						res += "Dernier Snipe par : " + guild.getMemberById(tab[1]).getEffectiveName();
+						res += "```";
+						channel.sendMessage(res).queue();
+					} catch(IOException ioe){
+						if(new File("ListeServeur/"+guild.getId()).isFile()) {
+							System.out.println("Erreur lors de la lecture");
+						}
 					}
 
-					res += "Dernier Snipe par : " + lastSniper;
+					
 
-					res += "```";
-					channel.sendMessage(res).queue();
+					
 				}
 
 
@@ -180,14 +180,22 @@ public class MessageListener extends ListenerAdapter
 							+ "```").queue();
 				}
 
+				else if (msg.equals("@"+personne+" vu"))
+				{
+					//channel.sendMessage(guild.getMemberById(idPersonne).getOnlineStatus().toString()).queue();
+					if(guild.getMemberById(idPersonne).getOnlineStatus().toString().equals("ONLINE") && trouvable()) {
+						//channel.sendMessage("Bien vue").queue();
 
-				/*else if (msg.substring(0, 5).equals(pront+"pront")){
-					if (msg.length() == 8) {
-						pront = msg.substring(7, 8);
+						ajouterPoint(guild,author);
+						lastSnipe = new Date();
+						lastSniper = author.getName();
+						message.addReaction("\uD83D\uDC4D").queue();
+						//SetTimer
 					} else {
-						channel.sendMessage("Que 1 char pour le pront salo").queue();
+						message.addReaction("\uD83D\uDC4E").queue();
 					}
-				}*/
+				}
+				
 
 
 			}
@@ -236,7 +244,7 @@ public class MessageListener extends ListenerAdapter
 				new BufferedWriter(new FileWriter(
 						new File("ListeServeur/"+guild.getId())));
 				){
-			writer.append(guild.getName()+"\n");
+			writer.append(ligneNormalisation(guild.getName(), author.getId(), new Date().getTime()+"")+"\n");
 			writer.append(res);
 			writer.flush(); // Si tu libère le buffer (ici ce n'est pas utile)
 		} catch(IOException ioe){
@@ -244,41 +252,11 @@ public class MessageListener extends ListenerAdapter
 		}
 
 
-		/*BufferedReader reader = new BufferedReader(new FileReader(new File(guild.getName())));
-		try(BufferedWriter writer = 
-				new BufferedWriter(new FileWriter(
-						new File(guild.getName())));
-				){
-
-			//Ajoute un point
-			int points = 0;
-
-				String line = "";
-				while((line = reader.readLine()) != null){
-					String[] tab = line.split(":");
-					if(tab[0].equals(author.getId())) {
-						//System.out.println(guild.getMemberById(tab[0]).getUser().getName()+" à "+tab[1]);
-						points = Integer.parseInt(tab[1]); //ajoute le point
-						//System.out.println("test");
-						writer.append(author.getId()+":"+(points+1));//ecrit l'author du tireur
-						System.out.println(author.getId()+":"+(points+1));
-					} else {
-						writer.append(tab[0]+":"+tab[1]);//recrit la ligne
-						System.out.println(tab[0]+":"+tab[1]);
-					}
-					System.out.println(author.getId()+":"+(points+1));
-					writer.newLine(); // Aller à la ligne suivante
-				}
-
-
-
-
-
-			//écrit dans le fichier
-			writer.flush(); // Si tu libère le buffer (ici ce n'est pas utile)
-		} catch(IOException ioe){
-			System.out.println("Erreur écriture");
-		}*/
+		
+	}
+	
+	private String ligneNormalisation(String serverName, String lastFinderName, String lastFinderDate) {
+		return serverName+";"+lastFinderName+";"+lastFinderDate;
 	}
 
 
