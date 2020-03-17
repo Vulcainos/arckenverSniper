@@ -26,12 +26,11 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
 public class MessageListener extends ListenerAdapter
 {
 
-	static String personne = "Titan le sang";
-	static String idPersonne = "183719402343104512";
+	static String personne = "Titan le sang";//nom actuelle de la cible
+	static String idPersonne = "183719402343104512";//id de titan 
 
 
-	Date lastSnipe = new Date((new Date().getTime()-3600*1000));//heure lancement bot - 1 heure
-	String lastSniper = "Pas encore Snipe depuis le lancement du bot";
+
 
 	public static void main(String[] args)
 			throws LoginException, RateLimitedException, InterruptedException
@@ -46,20 +45,20 @@ public class MessageListener extends ListenerAdapter
 		} else if(args.length==2) {
 			idPersonne = args[1];
 		}
-		
+
 		//System.out.println("token : "+args[0]);
 		//System.out.println("idPersonne : "+args[1]);
- 
+
 		if(!new File("ListeServeur/").exists()) {
 			if(new File("ListeServeur").mkdirs()) {
-			System.out.println("Création dossier ListeServeur");
+				System.out.println("Création dossier ListeServeur");
 			} else {
 				System.out.println("**Dossier ListeServeur manquant!**");
 			}
 		}
 		JDA jda = new JDABuilder(AccountType.BOT).setToken(args[0]).buildBlocking();
-		personne = jda.getUserById(idPersonne).getName();
-		//System.out.println(personne);
+		
+		
 		System.out.println("Bot En Ligne");
 		jda.addEventListener(new MessageListener());
 	}
@@ -71,49 +70,43 @@ public class MessageListener extends ListenerAdapter
 
 		if (event.isFromType(ChannelType.TEXT))
 		{
-			User author = event.getAuthor();
-			boolean bot = author.isBot();
+			User author = event.getAuthor(); //Charge le User de l'event
 
-			if (!bot) {
-
+			if (!author.isBot()) {
 
 
 
 
 
 
-				MessageChannel channel = event.getChannel();
-				Message message = event.getMessage();
-				String msg = message.getContentDisplay();
-				Guild guild = event.getGuild(); 
-				TextChannel textChannel = event.getTextChannel();
 
+				MessageChannel channel = event.getChannel(); // Charge le salon de l'event
+				Message message = event.getMessage(); // Charge le message de l'event
+				String msg = message.getContentDisplay(); // Charge le texte du message
+				Guild guild = event.getGuild(); // Charge le serveur de l'event
+				TextChannel textChannel = event.getTextChannel(); // Charge le salon texte de l'event
 
-
-				//String patternString = "";
-
-				//Pattern pattern = Pattern.compile(patternString);
-
-				//Matcher matcher = pattern.matcher(msg);
-				//boolean matches = matcher.matches();
-
-				System.out.printf("[%s][%s] %s: %s\n",guild.getName(), textChannel.getName(), author.getName(), msg);
+				personne = guild.getMemberById(idPersonne).getEffectiveName(); //Charge le bon nom de personne
+				
+				
+				
+				System.out.printf("[%s][%s] %s: %s\n",guild.getName(), textChannel.getName(), author.getName(), msg); // Affiche l'event dans le terminal
 
 				/*if (msg.equals("ùping"))
 				{
 					channel.sendMessage("pong!").queue();
 				}*/
-				
 
+				//Affiche le score
 				if (msg.equals("ùscore"))
 				{
 					try(BufferedReader reader =
-							new BufferedReader(new FileReader(new File("ListeServeur/"+guild.getId())));
+							new BufferedReader(new FileReader(new File("ListeServeur/"+guild.getId()+"."+idPersonne)));
 							){
 						String line = reader.readLine();
 						String[] tab = line.split(";");
 						String res = "```" + "Liste des Snipe de "+personne+" sur "+tab[0]+" :\n";
-						
+
 						while((line = reader.readLine()) != null){
 							tab = line.split(":");
 							//System.out.println(guild.getMemberById(tab[0]).getUser().getName()+" à "+tab[1]);
@@ -126,16 +119,21 @@ public class MessageListener extends ListenerAdapter
 					} catch(IOException ioe){
 						System.out.println("Erreur lors de la lecture");
 					}
-				}else if (msg.equals("ùlast")) {
-					
-					
-					String res = "";
-					
-					//channel.sendMessage(lastSnipe.toString()).queue();
 
 					
+				}
+				
+				//Affiche les infos en rapport avec le dernier Snipe
+				else if (msg.equals("ùlast")) {
+
+
+					String res = "";
+
+					//channel.sendMessage(lastSnipe.toString()).queue();
+
+
 					try(BufferedReader reader =
-							new BufferedReader(new FileReader(new File("ListeServeur/"+guild.getId())));
+							new BufferedReader(new FileReader(new File("ListeServeur/"+guild.getId()+"."+idPersonne)));
 							){
 						String line = "";
 						line = reader.readLine();
@@ -143,7 +141,7 @@ public class MessageListener extends ListenerAdapter
 						Date time = new Date(Long.parseLong(tab[2]));
 						long temps = (3600 - (new Date().getTime()/1000 - time.getTime()/1000));
 						//System.out.println(line);
-						
+
 						res = "```" + "Dernier Snipe : " + time +"\n";
 						if(temps>0) {
 							res += "Temps avant prochain Snipe : "+ temps/60 + " minutes et " + temps%60 + " secondes\n";
@@ -160,13 +158,13 @@ public class MessageListener extends ListenerAdapter
 						}
 					}
 
-					
 
-					
+
+
 				}
 
 
-
+				//Affiche la page d'aide
 				else if (msg.equals("ùhelp"))
 				{
 					channel.sendMessage("```"
@@ -180,7 +178,33 @@ public class MessageListener extends ListenerAdapter
 							+ "```").queue();
 				}
 
-				else if (msg.equals("@"+personne+" vu"))
+
+				// New detection of Sniper more flex
+				else if(msg.startsWith("@"+personne) && msg.contains(" ") && msg.contains("vu")){
+					
+					String decoupe = msg.split(" ")[1];
+					//verif si il y a 2 espaces
+					if(decoupe.equals("")) {
+						decoupe = msg.split(" ")[2];
+					}
+					if(decoupe.contains("vu") && decoupe.length() < 5) {
+						//channel.sendMessage(guild.getMemberById(idPersonne).getOnlineStatus().toString()).queue();
+						if(guild.getMemberById(idPersonne).getOnlineStatus().toString().equals("ONLINE") && trouvable(guild)) {
+							//channel.sendMessage("Bien vue").queue();
+							
+							ajouterPoint(guild,author);
+
+
+							message.addReaction("\uD83D\uDC4D").queue();
+							//SetTimer
+						} else {
+							message.addReaction("\uD83D\uDC4E").queue();
+						}
+					}
+
+				}
+				//Old detection of snipe
+				/*else if (msg.equals("@"+personne+" vu"))
 				{
 					//channel.sendMessage(guild.getMemberById(idPersonne).getOnlineStatus().toString()).queue();
 					if(guild.getMemberById(idPersonne).getOnlineStatus().toString().equals("ONLINE") && trouvable()) {
@@ -194,33 +218,61 @@ public class MessageListener extends ListenerAdapter
 					} else {
 						message.addReaction("\uD83D\uDC4E").queue();
 					}
-				}
+				}*/
+
+
 				
-
-
 			}
 		}
 
 
 	}
 
+	/**
+	 * Permet de savoir si la personne est trouvable
+	 * @return true si trouvable false sinon
+	 */
+	private boolean trouvable(Guild guild) {
+		
+		if(!new File("ListeServeur/"+guild.getId()+"."+idPersonne).isFile()) {
+			return true;
+		}
+		try(BufferedReader reader =
+				new BufferedReader(new FileReader(new File("ListeServeur/"+guild.getId()+"."+idPersonne)));
+				){
+			String line = reader.readLine();
 
-	private boolean trouvable() {
-		return (new Date().getTime()/1000 - lastSnipe.getTime()/1000)>3600;
+			String[] tab = line.split(";");
+			//System.out.println(tab[2]);
+			if(new Date().getTime() - Long.parseLong(tab[2]) > 3600000) {
+				return true;
+			}
+
+		} catch(IOException ioe){
+			if(new File("ListeServeur/"+guild.getId()).isFile()) {
+				System.out.println("Erreur lors de la lecture");
+			}
+		}
+		return false;
 	}
 
-
+	/**
+	 * Ajoute un point au User en parametre si il peut optenir le point
+	 * @param guild serveur sur lequel ajouter le point
+	 * @param author User qui optiendra le point
+	 */
 	private void ajouterPoint(Guild guild, User author) {
+		
 		String res ="";
 		boolean dansLeFichier = false;
 		try(BufferedReader reader =
-				new BufferedReader(new FileReader(new File("ListeServeur/"+guild.getId())));
+				new BufferedReader(new FileReader(new File("ListeServeur/"+guild.getId()+"."+idPersonne)));
 				){
 			String line = "";
 			reader.readLine();
 			while((line = reader.readLine()) != null){
 				String[] tab = line.split(":");
-				//System.out.println(guild.getMemberById(tab[0]).getUser().getName()+":"+tab[1]);
+				System.out.println(guild.getMemberById(tab[0]).getUser().getName()+":"+tab[1]);
 
 				if(tab[0].equals(author.getId())) {
 					res += guild.getMemberById(tab[0]).getUser().getId()+":"+(Integer.parseInt(tab[1]) + 1)+"\n";
@@ -231,7 +283,8 @@ public class MessageListener extends ListenerAdapter
 			}
 
 		} catch(IOException ioe){
-			if(new File("ListeServeur/"+guild.getId()).isFile()) {
+			
+			if(new File("ListeServeur/"+guild.getId()+"."+idPersonne).isFile()) {
 				System.out.println("Erreur lors de la lecture");
 			} else {
 				System.out.println("Creation du fichier : "+guild.getId()+", serveur name : "+guild.getName());
@@ -242,7 +295,7 @@ public class MessageListener extends ListenerAdapter
 		}
 		try(BufferedWriter writer = 
 				new BufferedWriter(new FileWriter(
-						new File("ListeServeur/"+guild.getId())));
+						new File("ListeServeur/"+guild.getId()+"."+idPersonne)));
 				){
 			writer.append(ligneNormalisation(guild.getName(), author.getId(), new Date().getTime()+"")+"\n");
 			writer.append(res);
@@ -254,7 +307,14 @@ public class MessageListener extends ListenerAdapter
 
 		
 	}
-	
+
+	/**
+	 * Pas super utile mais c'est propre, permet de normaliser l'écriture dans un fichier de la premier ligne
+	 * @param serverName Nom du serveur
+	 * @param lastFinderName Dernier User qui à trouve la personne
+	 * @param lastFinderDate Date du dernier Snipe
+	 * @return String normalisé des parametres
+	 */
 	private String ligneNormalisation(String serverName, String lastFinderName, String lastFinderDate) {
 		return serverName+";"+lastFinderName+";"+lastFinderDate;
 	}
