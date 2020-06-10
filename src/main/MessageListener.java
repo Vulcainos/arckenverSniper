@@ -103,8 +103,10 @@ public class MessageListener extends ListenerAdapter
 					try(BufferedReader reader =
 							new BufferedReader(new FileReader(new File("ListeServeur/"+guild.getId()+"."+idPersonne)));
 							){
+						int nbPoints = 0;
 						String line = reader.readLine();
 						String[] tab = line.split(";");
+						
 						String res = "```" + "Liste des Snipe de "+personne+" sur "+tab[0]+" :\n";
 
 						while((line = reader.readLine()) != null){
@@ -112,8 +114,9 @@ public class MessageListener extends ListenerAdapter
 							//System.out.println(guild.getMemberById(tab[0]).getUser().getName()+" à "+tab[1]);
 
 							res += guild.getMemberById(tab[0]).getUser().getName()+" a "+tab[1]+"\n";
-
+							nbPoints+= Integer.parseInt(tab[1]);
 						}
+						res += "Le nombre de Snipe total est de " + nbPoints +"\n";
 						res += "```";
 						channel.sendMessage(res).queue();
 					} catch(IOException ioe){
