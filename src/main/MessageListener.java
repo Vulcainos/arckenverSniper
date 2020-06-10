@@ -90,7 +90,7 @@ public class MessageListener extends ListenerAdapter
 				
 				
 				
-				System.out.printf("[%s][%s] %s: %s\n",guild.getName(), textChannel.getName(), author.getName(), msg); // Affiche l'event dans le terminal
+				//System.out.printf("[%s][%s] %s: %s\n",guild.getName(), textChannel.getName(), author.getName(), msg); // Affiche l'event dans le terminal
 
 				/*if (msg.equals("ùping"))
 				{
@@ -275,7 +275,7 @@ public class MessageListener extends ListenerAdapter
 			reader.readLine();
 			while((line = reader.readLine()) != null){
 				String[] tab = line.split(":");
-				System.out.println(guild.getMemberById(tab[0]).getUser().getName()+":"+tab[1]);
+				//System.out.println(guild.getMemberById(tab[0]).getUser().getName()+":"+tab[1]);
 
 				if(tab[0].equals(author.getId())) {
 					res += guild.getMemberById(tab[0]).getUser().getId()+":"+(Integer.parseInt(tab[1]) + 1)+"\n";
